@@ -14,11 +14,13 @@ A = ([-Res/L , -K/L;K/J, -B/J]);
 B = ([1/L 1/L;0 0]);
 C = [1 0; 0 P];
 D = [0 0;0 0];
+dt = 0.05;
 % constructing state space model
 sys = ss(A,B,C,D,'Inputname', {'Armature Voltage', 'Noise'}, 'Outputname', {'Armature Current','Linear Speed'});
+sys = c2d(sys,dt);
 % constructing simulation
 % time
-t = 0:0.01:10;
+t = 0:dt:3;
 % PWM and voltage
 PWM = 255;
 V_in = PWM*(12/255)*ones(size(t));
@@ -32,9 +34,13 @@ y = lsim(sys,total_in,t);
 current = y(:,1);
 omega = y(:,2);
 % covariance matrices
-Q = 0.1;
-R = [1 0;
-     0 0.1];
+Q = cov(rand(size(t)));
+White_noise_intensity = 10;
+R = covar(sys,White_noise_intensity);
+ % simple moving average 
+ window = 5;
+ current_MA = movmean(current,window);
+ speed_MA = movmean(omega,window);
  % making a Kalman Filter
  [kalmf,L,P] = kalman(sys,Q,R);
  new_outs = kalmf(:,1);
@@ -49,18 +55,20 @@ subplot(2,1,1)
 plot(t, omega)
 hold on
 plot(t, Omega_est)
-title(['Speed response at ' num2str(PWM/255) ' Duty cycle'],'Fontsize',titlesize,'FontWeight', 'Bold');
-ylabel('\omega in m/s','Fontsize',labelsize,'FontWeight', 'Bold');
+plot(t, speed_MA)
+title(['Speed response at ' num2str(PWM) ' Duty cycle'],'Fontsize',titlesize,'FontWeight', 'Bold');
+ylabel('Speed in m/s','Fontsize',labelsize,'FontWeight', 'Bold');
 xlabel('time/ s','Fontsize',labelsize,'FontWeight', 'Bold');
-legend('Raw Speed','Filtered Speed')
+legend('Raw Speed','Kalman Filtered Speed','Moving Averaged Speed')
 grid on
 
 subplot(2,1,2)
 plot(t, current)
 hold on 
 plot(t, Armature_Current_est)
-title(['Current response at ' num2str(PWM/255) ' Volts'],'Fontsize',titlesize,'FontWeight', 'Bold');
+plot(t, current_MA)
+title(['Current response at ' num2str(PWM) ' Duty cycle'],'Fontsize',titlesize,'FontWeight', 'Bold');
 ylabel('I_a in Amps','Fontsize',labelsize,'FontWeight', 'Bold');
 xlabel('time/ s','Fontsize',labelsize,'FontWeight', 'Bold');
-legend('Raw Current', 'Filtered Current')
+legend('Raw Current', 'Kalman Filtered Current','Moving Averaged Current')
 grid on

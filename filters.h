@@ -19,26 +19,60 @@
 
         */
     }
-    float KalmanFilter(float readings, float P[][2], float Q_process, float R_process, float T_sampling){
-        float  y, S, KF_out;
-        float K_0, K_1, K_2;
 
-        P[0][0] += ;
-        P[0][1] += ;
-        P[0][2] += ;
-        P[1][0] += ;
-        P[1][1] += ;
-        P[1][2] += ;
+    /* Kalman Filter / Linear Quadratic Estimator
 
-        y = ;
-        S = P[0][0] + R_process;
-        K_0 = P[0][0]/S;
-        K_1 = P[1][1]/S;
-        K_2 = P[2][2]/S;
-
-
-        KF_out += K_0*y
-
-
-
+    work in progress */
+    float vec_mat_2by2(float X[], float Y[][2]){
+        // vector x matrix
+        int i,j;
+        float res=0;
+            for(i=0;i<2;i++){
+            for(j=0;j<2;j++){
+            res += X[i]*Y[j][i];
+            }
+            }
+        return res;
     }
+    float transpose(float a[][2]){
+        // matrix transpose
+        float res[2][2];
+            for (int i = 0; i < 2; i++){
+            for (int j = 0; j < 2; j++) {
+                res[j][i] = a[i][j];
+            }
+        }
+        return res;
+    }
+
+    float sum_mat(float a[][2], float b[][2]){
+        // matrix sum
+    float sum[][2] = {{0,0},{0,0}};
+    int i,j;
+
+        for(i=0;i<2;i++){
+        for(j=0;j<2;j++){
+            sum[i][j] = a[i][j] + b[i][j];
+        }
+    }
+    return sum;
+    }
+
+    /*float KalmanFilter(float Current_readings, float Omega_readings, float Q, float R[][2]){
+    // Declaration of model params
+       float K_b =
+       float K_t =
+       float J =
+       float B =
+       float Res =
+       float Ind =
+    // Declaration of State transition Matrix
+       float A[2][2] = {{-Res/Ind, -K_b/Ind},{K_t/J, -B/J}};
+       float B[2][2] = {{1/Ind, 1/Ind},{0,0}};
+       float C[2][2] = {{1,0},{0,1}};
+    // Declaration of state vector
+       float X[2] = {Current_readings,Omega_readings};
+
+
+
+    }*/
