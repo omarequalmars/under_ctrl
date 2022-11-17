@@ -1,4 +1,4 @@
-// This repo consists mainly of several header files along with some .c files for testing
+This repo consists mainly of several header files along with some .c files for testing
 
 PID.h is a header files containing a family of functions relating to PID control, mainly culminating in a complete PID function with saturation and anti-windup features
 
