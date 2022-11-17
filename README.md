@@ -2,7 +2,7 @@
 
 PID.h is a header files containing a family of functions relating to PID control, mainly culminating in a complete PID function with saturation and anti-windup features
 
-filters.h is a work in progress, which will be a family of functions relating to implementation of different filters for data processing.
+filters.h is a work in progress, which will be a family of functions relating to the implementation of different filters for data processing.
 
 The TestrunXXX files are test files that generate fake data to test various features on, ex. TestRunPID.c is a file testing the PID function, meant to simulate a void loop in an Arduino/ESP.
 
