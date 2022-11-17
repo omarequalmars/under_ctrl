@@ -42,7 +42,7 @@
                 // CTRL action is calculated as the superposition of three controllers
             float ctrlaction = P_ctrlr(error, P) + I_ctrlr(sumerror, I, T_samp) + D_ctrlr(differror, D, T_samp);
                 int sat = saturated(ctrlaction,saturation_limit);
-                // Clamping
+                // CLAMPING IS NOT FUNCTIONAL AT THE MOMENT, PLEASE REFRAIN FROM USE UNTIL FURTHER UPDATES 
                 // if (saturated) => pause the integration (let sumerror be 0)
                 switch (clamping){
                 case 0:
