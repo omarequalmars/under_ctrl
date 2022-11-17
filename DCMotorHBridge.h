@@ -1,7 +1,7 @@
 
 
 void MoveitMoveit(int PulseWidth, int direction, int A_channel, int B_channel, int INPUT_PIN){
-    if (fabs(PulseWidth)<=255){
+    if (fabs(PulseWidth)>=255){
         PulseWidth = 255;
     }
     if(direction==1){ // CCW
