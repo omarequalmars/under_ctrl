@@ -1,10 +1,10 @@
 
 
-    float ComplementaryFilter(float readings, float filtered, float alpha){ // Infinite Impulse Response Filter
+    float ComplimentaryFilter(float readings, float filtered, float alpha){ // Infinite Impulse Response Filter
         filtered = readings*alpha + filtered*(1-alpha);
         return filtered;
         /*
-
+        
         This filter is a super basic IIR filter
         It takes an exponentially weighed moving average over the readings
         to the effect of smoothing out any ripples.
@@ -20,4 +20,10 @@
         */
     }
 
-  
+    float ComplimentaryFusionFilter(float readings_1, float readings_2_dot,float updated, float T_sampling, float alpha){
+      updated = readings_1*alpha + (updated + readings_2_dot*T_sampling)*(1-alpha);
+      return updated;
+    }
+
+    
+ 
