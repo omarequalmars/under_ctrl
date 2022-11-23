@@ -30,6 +30,6 @@ float currentscale(int bits){
 
 float NeedForSpeed(int pulses, float Pulses_per_rev, float T_sampling){
   float Speed;
-  Speed = 2*pulses/(Pulses_per_rev*T_sampling);
+  Speed = 2.0*pulses/(Pulses_per_rev*T_sampling);
   return Speed;
 }
