@@ -1,5 +1,7 @@
     int saturated(float ctrlaction, float satlim);
-
+	float sumerror = 0;
+	float last_error = 0;
+	float last_last_error = 0; 
     float P_ctrlr(float error, float P){
             float ctrlaction = error*P; // calculating ctrl action based on P
             return ctrlaction;
@@ -12,10 +14,11 @@
             float ctrlaction = differror*D/T_samp;
             return ctrlaction;
         }
-    float PID_ctrlr_withoverflow(float error, float last_error, float last_last_error, float P, float I, float D, float saturation_limit, float T_samp){
-
+    float PID_ctrlr_withoverflow(float error, float P, float I, float D, float saturation_limit, float T_samp){
+		
             float ctrlaction = ctrlaction + P*(error - last_error) + I*T_samp*error + D*(error - 2*last_error + last_last_error)/T_samp;
-
+		last_error = error;
+		last_last_error = last_error;
             int sat = saturated(ctrlaction,saturation_limit);
                 // Saturation
                 // if(upper limit saturated) => limit the ctrlaction to upper limit
@@ -28,30 +31,43 @@
                 default:
                     return ctrlaction;
                 }
-
                 return ctrlaction;
-
     }
-    float PID_ctrlr_withoutoverflow(float error, float sumerror, float differror, float P, float I, float D, float saturation_limit, float T_samp, int clamping){
+    
+    float PID_ctrlr_withoutoverflow(float error, float P, float I, float D, float saturation_limit, float T_samp, int clamping){
             /* error, sumerror, differror are the error, cumulative error, and error rate respectively,
             P, I, & D are the coefficients
             saturation_limit is the maximum ctrl action actuator can take
             T_samp is the sampling time
             clamping is a flag, if == 0 then it is off, otherwise it is on */
-
-                // CTRL action is calculated as the superposition of three controllers
-            float ctrlaction = P_ctrlr(error, P) + I_ctrlr(sumerror, I, T_samp) + D_ctrlr(differror, D, T_samp);
+              // differencing the error
+		differror = error - last_error;
+              // delaying the error
+		last_error = error;
+		float ctrlaction;
+              // saturation flag
                 int sat = saturated(ctrlaction,saturation_limit);
-                // CLAMPING IS NOT FUNCTIONAL AT THE MOMENT, PLEASE REFRAIN FROM USE UNTIL FURTHER UPDATES 
-                // if (saturated) => pause the integration (let sumerror be 0)
-                switch (clamping){
-                case 0:
-                    break;
-                default:
-                    ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp);
-                    break;
-                }
-                // Saturation
+              // clamping flag: ctrlr must be saturated and error must be opposite in sign to ctrlaction
+		            int clamp_cond = (sat != 0)*(error*ctrlaction < 0);
+               
+    switch (clamping){
+      // if no clamping then business as usual
+      case 0:
+		    sumerror += error;
+		    ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp) + float I_ctrlr(sumerror, I, T_samp);
+		break;
+    // if clamping is on
+        default:
+        // check for condition
+		if(clamp_cond){
+      // halt the error summation and calculate alternative ctrlaction
+        ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp);
+		} else{// business as usual
+		    sumerror += error;
+		    ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp) + float I_ctrlr(sumerror, I, T_samp);
+		}
+             }
+              // Saturation
                 // if(upper limit saturated) => limit the ctrlaction to upper limit
                 // if(lower limit saturated) => limit the ctrlaction to lower limit
                 switch (sat){
