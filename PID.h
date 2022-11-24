@@ -54,7 +54,7 @@
       // if no clamping then business as usual
       case 0:
 		    sumerror += error;
-		    ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp) + float I_ctrlr(sumerror, I, T_samp);
+		    ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp) + I_ctrlr(sumerror, I, T_samp);
 		break;
     // if clamping is on
         default:
