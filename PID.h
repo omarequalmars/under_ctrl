@@ -64,7 +64,7 @@
         ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp);
 		} else{// business as usual
 		    sumerror += error;
-		    ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp) + float I_ctrlr(sumerror, I, T_samp);
+		    ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp) + I_ctrlr(sumerror, I, T_samp);
 		}
              }
               // Saturation
