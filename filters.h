@@ -39,15 +39,33 @@
        T_sampling is self descriptive
        */
     }
-
-    float MA_Filter(float x_1, float x_2, float x_3, int window){
-      if(window==3) return (x_1+x_2+x_3)/3;
-      else if(window==2) return (x_1+x_2)/2;
-      /*
-       This is a FIR Filter
-       It takes a simple unweighted moving average over the readings with a max window of 3 for simplicity.
-       In order for the filter to work, readings x_1, 2, and 3 must be accordingly delayed in the main code (I'm sorry you have to do that)
+    float filter[10]={0,0,0,0,0,0,0,0,0,0};
+    float SMA_Filter(float x_1, int window_size){
+      if(window_size>10){
+        window_size = 10;
+        // max window size is 10 for speed in calculation
+      }
+     for(int i = window_size-1;i > 0;i--){
+       // delaying each received input
+       filter[i]=filter[i-1];
+     }
+     // saving the most recent reading
+     filter[0]=x_1;
+     // return the moving average
+    return array_sum(filter,window_size)/window_size;\
+    /*
+       This is a
+              It takes a simple unweighted moving average over the readings with a max window of 10 for simplicity.
        */
+    }
+      
+    
+    float array_sum(float array[],int array_size){
+      float sum = 0;
+      for(int i = 0; i < array_size; i++){
+          sum += array[i];
+      }
+      return sum;
     }
     
     
