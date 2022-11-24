@@ -17,8 +17,8 @@
     float PID_ctrlr_withoverflow(float error, float P, float I, float D, float saturation_limit, float T_samp){
 		
             float ctrlaction = ctrlaction + P*(error - last_error) + I*T_samp*error + D*(error - 2*last_error + last_last_error)/T_samp;
-		last_error = error;
 		last_last_error = last_error;
+		last_error = error;
             int sat = saturated(ctrlaction,saturation_limit);
                 // Saturation
                 // if(upper limit saturated) => limit the ctrlaction to upper limit
