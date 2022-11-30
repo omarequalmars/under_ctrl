@@ -20,8 +20,8 @@
         */
     }
 
-    float ComplementaryFusionFilter(float readings_1, float readings_2_dot,float updated, float T_sampling, float alpha){
-      updated = readings_1*alpha + (updated + readings_2_dot*T_sampling)*(1-alpha);
+    float ComplementaryFusionFilter(float readings_1, float delta_readings_2,float updated, float alpha){
+      updated = readings_1*alpha + (updated + delta_readings_2)*(1-alpha);
       return updated;
       /* 
        This is a sensor fusion filter based on the complementary filter concept
@@ -40,7 +40,7 @@
        */
     }
     float filter[10]={0,0,0,0,0,0,0,0,0,0};
-    float SMA_Filter(float x_1, int window_size){
+    float SMA_FIR_Filter(float x_1, int window_size){
       if(window_size>10){
         window_size = 10;
         // max window size is 10 for speed in calculation
@@ -57,6 +57,24 @@
        This is a
               It takes a simple unweighted moving average over the readings with a max window of 10 for simplicity.
        */
+    }
+    float WMA_FIR_filter(float x_1, int window_size, float weights[]){
+      if(window_size>10){
+        window_size = 10;
+        // max window size is 10 for speed in calculation
+      }
+      static float output=0;
+      for(int i = window_size-1;i > 0;i--){
+       // delaying each received input
+       filter[i]=filter[i-1];
+     }
+     // saving the most recent reading
+     filter[0]=x_1;
+     for(int i = window_size-1;i > 0;i--){
+       // delaying each received input
+       output += weights[i]*filter[i];
+    }
+    return output;
     }
       
     
