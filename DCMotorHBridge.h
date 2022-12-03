@@ -26,6 +26,7 @@ void MoveitMoveit(int PulseWidth, int A_channel, int B_channel, int INPUT_PIN){
 
 float currentscale(){// ACS712 current sensor ==> ADC scaling
     static int bits;
+    bits = analogRead(A0);
     bits -= 512;
     
     float voltage = bits*5/512.0;// map the bits to volts
