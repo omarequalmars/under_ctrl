@@ -13,13 +13,13 @@ void MoveitMoveit(int PulseWidth, int A_channel, int B_channel, int INPUT_PIN){
       // if command is positive, go CCW/CW
         digitalWrite(A_channel,HIGH);
         digitalWrite(B_channel,LOW);
-        digitalWrite(INPUT_PIN,pulse_mag);
+        analogWrite(INPUT_PIN,pulse_mag);
     }
     else if(PulseWidth < 0){ 
       // if it switches signs, go the other way
         digitalWrite(A_channel,LOW);
         digitalWrite(B_channel,HIGH);
-        digitalWrite(INPUT_PIN,pulse_mag);
+        analogWrite(INPUT_PIN,pulse_mag);
     }
     
 }
