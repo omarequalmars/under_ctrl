@@ -9,7 +9,7 @@ void MoveitMoveit(int PulseWidth, int A_channel, int B_channel, int INPUT_PIN){
       PulseWidth = -255;
     }
     // decide directions based on PWM sign
-    if(PulseWidth > 0){ 
+    if(PulseWidth >=0){ 
       // if command is positive, go CCW/CW
         digitalWrite(A_channel,HIGH);
         digitalWrite(B_channel,LOW);
