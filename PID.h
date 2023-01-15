@@ -35,18 +35,14 @@ float PID_ctrlr_withZOH(float error, float P, float I, float D, float saturation
   static int flag = 0;
   static float integrator_sum = 0;// integrator sum
   static float differror = 0;// error difference
-  static float differror_filtered = 0;
   static float sumerror = 0;// cumulative error sum
   static float last_error = 0;// delayed error
   static short sat = 0;// saturation flag
   static short clamp_cond = 0;// clamping into operation
   static short zero_cross = 0;
   static float ctrlaction = 0;
-  static float Weights_input[3] = {0.02008336556421,  0.04016673112842,  0.02008336556421};
-  static float Weights_feedback[2] = { -1.561018075801,   0.6413515380576};
   // differencing the error
   differror = error - last_error;
-  differror_filtered = ComplementaryFilter(differror, differror_filtered, 0.1);
 
   // saturation flag
   sat = saturated(ctrlaction, saturation_limit);// check saturated or not
