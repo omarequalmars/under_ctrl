@@ -32,7 +32,6 @@ float D_ctrlr(float differror, float D, float T_samp) { // calculating ctrl acti
 }
 float PID_ctrlr_withZOH(float error, float P, float I, float D, float saturation_limit, float T_samp, int anti_windup)
 {
-  static int flag = 0;
   static float integrator_sum = 0;// integrator sum
   static float differror = 0;// error difference
   static float sumerror = 0;// cumulative error sum
@@ -70,13 +69,6 @@ float PID_ctrlr_withZOH(float error, float P, float I, float D, float saturation
 
         sumerror += error;
         integrator_sum = I_ctrlr(sumerror, I, T_samp);
-        if (flag > 0) {
-          if (fabs(error) < 0.01) {
-            error = 0;
-            differror = 0;
-            sumerror = 0;
-          }
-        }
         ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp) + integrator_sum;
       }
   }
