@@ -1,4 +1,5 @@
 float array_sum(float array[],int array_size);
+float dotproduct(float array1[], float array2[],int array_size);
 
     float ComplementaryFilter(float readings, float filtered, float alpha){ // Infinite Impulse Response Filter
         filtered = readings*alpha + filtered*(1-alpha);
@@ -61,52 +62,45 @@ float array_sum(float array[],int array_size);
 
     float FIR_filter(float x_0, int window_size, float weights[]){
         // defining input array
-        static float Y[10]={0,0,0,0,0,0,0,0,0,0};
-        static float X[10]={0,0,0,0,0,0,0,0,0,0};
-      if(window_size>10){
-        window_size = 10;
+        static float output;
+        static int i;
+        output = 0;
+        static float X[5]={0,0,0,0,0};
+      if(window_size>5){
+        window_size = 5;
         // max window size is 10 for speed in calculation
       }
            // saving the most recent reading
       X[0]=x_0;
-      for(int i = window_size-1;i > 0;i--){
-       // delaying each received input
-       X[i]=X[i-1];
-     }
-     for(int i = window_size;i > 0;i--){
-       // calculating output
-       Y[i]= weights[i]*X[i];
-    }
-    return array_sum(Y,window_size);
+
+      output = dotproduct(X,weights,window_size);
+      for(i=0;i<window_size;i++){
+        X[i+1] = X[i];
+      }
+      return output;
     }
 
     float IIR_filter(float x_0,int window_size, float weights_input[], float weights_feedback[]){
         // defining input and output arrays
-    static float X[10] = {0,0,0,0,0,0,0,0,0,0};
-    static float Y[10] = {0,0,0,0,0,0,0,0,0,0};
-    if(window_size>10){
-        window_size = 10;
-         // max window size is 10 for speed in calculation
+        static float output;
+    static float X[5] = {0,0,0,0,0};
+    static float Y[4] = {0,0,0,0};
+    if(window_size>5){
+        window_size = 5;
+         // max window size is 5 for speed in calculation
     }
-     for(int i = window_size-1;i > 0;i--){
-       // delaying each received input
-       X[i]=X[i-1];
-     }
-     // saving the most recent reading
-     X[0]=x_0;
-     // setting the current filter output to zero
-     Y[0]=0;
-     for(int i = 0;i <window_size-1;i++){
-       // calculating filter output
-       // through the summation of present and past inputs and outputs
-       Y[0] += (weights_input[i]*X[i])-(weights_feedback[i]*Y[i+1]);
-    }
-    Y[0]+=(weights_input[window_size]*X[window_size]);
-    for(int i = window_size-1;i > 0;i--){
-       // delaying each output by 1
-    Y[i]=Y[i-1];
-     }
-     return Y[0];
+    X[0]=x_0;
+    output = dotproduct(X,wei  ghts_input,window_size) - dotproduct(Y,weights_feedback,window_size-1);
+    for(i=0;i<window_size;i++){
+      if(i<(window_size-1)){
+        X[i+1]=X[i];
+        Y[i+1]=Y[i];
+      }
+      else if(i<window_size){
+        X[i+1]=X[i];
+      }
+
+      Y[0]=output;
     }
 
     float array_sum(float array[],int array_size){
@@ -115,4 +109,14 @@ float array_sum(float array[],int array_size);
           sum += array[i];
       }
       return sum;
+    }
+
+    float dotproduct(float array1[], float array2[],int array_size){
+    static float sum;
+    sum = 0;
+    static int i = 0;
+    for(i=0;i<array_size;i++){
+        sum += array1[i]*array2[i];
+    }
+    return sum;
     }
