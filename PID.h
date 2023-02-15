@@ -71,7 +71,7 @@ float PID_ctrlr_withTustin(float error, float P, float I, float D, float saturat
     static float a = P + I*T_samp/2 + 2*D/T_samp;
     static float b = I*T_samp - 4*D/T_samp;
     static float c = - P + I*T_samp/2 + 2*D/T_samp;
-    static float output = 0;
+    static float ctrlaction = 0;
     static short sat = 0;
     ctrlaction = IIR_filter(error,3,{a,b,c},{0,-1});
 
