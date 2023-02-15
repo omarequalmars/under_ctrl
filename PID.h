@@ -1,4 +1,39 @@
-#include "filters.h"
+float dotproduct(float array1[], float array2[],int array_size);
+float IIR_filter(float x_0,int window_size, float weights_input[], float weights_feedback[]);
+
+float IIR_filter(float x_0,int window_size, float weights_input[], float weights_feedback[]){
+        // defining input and output arrays
+        static float output;
+    static float X[5] = {0,0,0,0,0};
+    static float Y[4] = {0,0,0,0};
+    static int i;
+    if(window_size>5){
+        window_size = 5;
+         // max window size is 5 for speed in calculation
+    }
+    X[0]=x_0;
+    output = dotproduct(X,weights_input,window_size) - dotproduct(Y,weights_feedback,window_size-1);
+    for(i=0;i<window_size;i++){
+      X[i+1]=X[i];
+      }
+      for(i=0;i<window_size-1;i++){
+      Y[i+1]=Y[i];
+      }
+      Y[0]=output;
+      return output;
+    }
+
+
+float dotproduct(float array1[], float array2[],int array_size){
+        static float sum;
+        sum = 0;
+        static int i = 0;
+        for(i=0;i<array_size;i++){
+            sum += array1[i]*array2[i];
+        }
+        return sum;
+    }
+
 
 int saturated(float ctrlaction, float satlim) { // saturation status
   /* this function returns
@@ -30,6 +65,23 @@ float D_ctrlr(float differror, float D, float T_samp) { // calculating ctrl acti
   D_ctrlaction = (differror * D) / T_samp;
   return D_ctrlaction;
 }
+
+float PID_ctrlr_withTustin(float error, float P, float I, float D, float saturation_limit, float T_samp)
+{
+    static float a = P + I*T_samp/2 + 2*D/T_samp;
+    static float b = I*T_samp - 4*D/T_samp;
+    static float c = - P + I*T_samp/2 + 2*D/T_samp;
+    static float output = 0;
+    static short sat = 0;
+    ctrlaction = IIR_filter(error,3,{a,b,c},{0,-1});
+
+    sat = saturated(ctrlaction, saturation_limit);// check saturated or not
+  if (sat == 1)
+    ctrlaction = saturation_limit;
+  else if (sat == -1)
+    ctrlaction = -saturation_limit;
+  return ctrlaction;
+}
 float PID_ctrlr_withZOH(float error, float P, float I, float D, float saturation_limit, float T_samp, int anti_windup)
 {
   static float integrator_sum = 0;// integrator sum
@@ -55,8 +107,12 @@ float PID_ctrlr_withZOH(float error, float P, float I, float D, float saturation
       // check if it's clamping time
       zero_cross = (((last_error < 0) && (error > 0)) || ((last_error > 0) && (error < 0)));// 0,1
       clamp_cond = ((sat == 1) && (error >= 0)) || ((sat == -1) && (error <= 0));//0,1
-
-      if (clamp_cond) {// stop integ. in clamping time
+        if (clamp_cond && zero_cross){
+             sumerror = 0;
+        integrator_sum = 0;
+        ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp) + integrator_sum;
+        }
+      else if (clamp_cond) {// stop integ. in clamping time
         ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp) + integrator_sum;
       }
       else if (zero_cross) {
@@ -72,10 +128,6 @@ float PID_ctrlr_withZOH(float error, float P, float I, float D, float saturation
         ctrlaction = P_ctrlr(error, P) + D_ctrlr(differror, D, T_samp) + integrator_sum;
       }
   }
-  // Saturation
-  // if(upper limit saturated) => limit the ctrlaction to upper limit
-  // if(lower limit saturated) => limit the ctrlaction to lower limit
-  flag = 1;
 
   // delaying the error
   last_error = error;
