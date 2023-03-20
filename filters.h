@@ -82,12 +82,14 @@ float dotproduct(float array1[], float array2[],int array_size){
     }
     X[0]=x_0;
     output = dotproduct(X,weights_input,window_size) - dotproduct(Y,weights_feedback,window_size-1);
-    for(i=0;i<window_size;i++){
-      X[i+1]=X[i];
-      }
-      for(i=0;i<window_size-1;i++){
-      Y[i+1]=Y[i];
-      }
+    for(int i = window_size;i > 0;i--){
+       // delaying each received input
+       X[i]=X[i-1];
+     }
+      for(int i = window_size-1;i > 0;i--){
+       // delaying each received input
+       Y[i]=Y[i-1];
+     }
       Y[0]=output;
       return output;
     }
