@@ -1,14 +1,15 @@
 
 
 float modelrefO1(float time_constant, float setpoint, float T_samp){
-    static float state_dot = 0;
     static float state = 0;
-    state_dot = -state/time_constant + setpoint/time_constant;
-    state += state_dot*T_samp;
+    static float A_m = B_m = 1/time_constant;
+    static float a = B_m*T_samp/(2+A_m*T_samp);
+    static float b = (A_m*T - 2)/(A_m*T + 2);
+    state = a*(setpoint + last_setpoint) - b*state;
     return state;
 }
 
-float ImproviseAdaptOvercome(float state_real, float gain_initial,float gain_max, float learning_rate, float time_constant, float setpoint, float T_samp){
+float ImproviseAdaptOvercome(float state_real, float gain_initial, float gain_max, float learning_rate, float time_constant, float setpoint, float T_samp){
     static float gain = gain_initial;
     static float tracking_error = 0;
     static float model_error = 0;
@@ -16,7 +17,7 @@ float ImproviseAdaptOvercome(float state_real, float gain_initial,float gain_max
     model_error = state_real - modelrefO1(time_constant, setpoint, T_samp);
     gain -= T_samp*learning_rate*model_error*tracking_error;
     gain = (gain <= 0) ? 0 : gain;
-    gain = (gain >= gain_max) ? gain_max : gain;
+    gain = (gain >= gain_max) ? gain_max : gain ;
     return gain;
 }
 
@@ -34,12 +35,12 @@ float Trap(float variable, float T_samp){
     static float X_last = 0;
     static float integral = 0;
     X = variable;
-    integral = (X + X_last)*T_samp/2;
+    integral += (X + X_last)*T_samp/2;
     X_last = X;
     return integral;
 }
 
-float UnderControl(float speed, float setpoint, float gain_initial, float gain_max, float learning_rate,   float time_constant, float T_samp){
+float UnderControl(float speed, float setpoint, float gain_initial, float gain_max, float learning_rate, float time_constant, float T_samp){
     static float gain = 0;
     static float tracking_err = 0;
     static float ctrlaction = 0;
