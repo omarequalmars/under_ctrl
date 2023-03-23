@@ -6,7 +6,7 @@ float modelrefO1(float time_constant, float setpoint, float T_samp){
     static float A_m = 1/time_constant;
     static float last_setpoint = 0;
     static float a = B_m*T_samp/(2+A_m*T_samp);
-    static float b = (A_m*T - 2)/(A_m*T + 2);
+    static float b = (A_m*T_samp - 2)/(A_m*T_samp + 2);
     state = a*(setpoint + last_setpoint) - b*state;
     last_setpoint = setpoint;
     return state;
