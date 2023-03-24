@@ -1,28 +1,4 @@
 float dotproduct(float array1[], float array2[],int array_size);
-float IIR_filter(float x_0,int window_size, float weights_input[], float weights_feedback[]);
-
-float IIR_filter(float x_0,int window_size, float weights_input[], float weights_feedback[]){
-        // defining input and output arrays
-        static float output;
-    static float X[5] = {0,0,0,0,0};
-    static float Y[4] = {0,0,0,0};
-    static int i;
-    if(window_size>5){
-        window_size = 5;
-         // max window size is 5 for speed in calculation
-    }
-    X[0]=x_0;
-    output = dotproduct(X,weights_input,window_size) - dotproduct(Y,weights_feedback,window_size-1);
-    for(i=0;i<window_size;i++){
-      X[i+1]=X[i];
-      }
-      for(i=0;i<window_size-1;i++){
-      Y[i+1]=Y[i];
-      }
-      Y[0]=output;
-      return output;
-    }
-
 
 float dotproduct(float array1[], float array2[],int array_size){
         static float sum;
