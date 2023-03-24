@@ -1,15 +1,3 @@
-float dotproduct(float array1[], float array2[],int array_size);
-
-float dotproduct(float array1[], float array2[],int array_size){
-        static float sum;
-        sum = 0;
-        static int i = 0;
-        for(i=0;i<array_size;i++){
-            sum += array1[i]*array2[i];
-        }
-        return sum;
-    }
-
 
 int saturated(float ctrlaction, float satlim) { // saturation status
   /* this function returns
