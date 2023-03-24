@@ -24,15 +24,6 @@ float ImproviseAdaptOvercome(float state_real, float gain_initial, float gain_ma
     return gain;
 }
 
-float NeedForSpeed(float variable, float T_samp){
-    static float X = 0;
-    static float X_last = 0;
-    static float diff = 0;
-    diff = (X - X_last)/T_samp;
-    X_last = X;
-    return diff;
-}
-
 float Trap(float variable, float T_samp){
     static float X = 0;
     static float X_last = 0;
@@ -43,13 +34,36 @@ float Trap(float variable, float T_samp){
     return integral;
 }
 
+float ImproviseAdaptOvercomeIntegral(float state_real, float gain_initial, float gain_max, float learning_rate, float time_constant, float setpoint, float T_samp){
+    static float gain = gain_initial;
+    static float tracking_error = 0;
+    static float model_error = 0;
+    tracking_error = setpoint - state_real;
+    model_error = state_real - modelrefO1(time_constant, setpoint, T_samp);
+    gain -= T_samp*learning_rate*model_error*Trap(tracking_error, T_samp);
+    gain = (gain <= 0) ? 0 : gain;
+    gain = (gain >= gain_max) ? gain_max : gain ;
+    return gain;
+}
+
+float NeedForSpeed(float variable, float T_samp){
+    static float X = 0;
+    static float X_last = 0;
+    static float diff = 0;
+    diff = (X - X_last)/T_samp;
+    X_last = X;
+    return diff;
+}
+
 float UnderControl(float speed, float setpoint, float gain_initial, float gain_max, float learning_rate, float time_constant, float T_samp){
     static float gain = 0;
+    static float gain_integral = 0;
     static float tracking_err = 0;
     static float ctrlaction = 0;
     gain = ImproviseAdaptOvercome(speed, gain_initial, gain_max, learning_rate, time_constant, setpoint, T_samp);
+    gain_integral = ImproviseAdaptOvercomeIntegral(speed, gain_initial, gain_max, learning_rate, time_constant, setpoint, T_samp);
     tracking_err = error(speed, setpoint);
-    ctrlaction = PID_ctrlr_withZOH(tracking_err, gain, 0, 0, 255, T_samp, 0);
+    ctrlaction = PID_ctrlr_withZOH(tracking_err, gain, gain_integral, 0, 255, T_samp, 1);
     return ctrlaction;
 }
 
