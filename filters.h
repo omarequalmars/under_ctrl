@@ -64,8 +64,8 @@ float dotproduct(float array1[], float array2[],int array_size){
            // saving the most recent reading
       X[0]=x_0;
       output = dotproduct(X,weights,window_size);
-      for(i=0;i<window_size;i++){
-        X[i+1] = X[i];
+      for(i=window_size;i<0;i--){
+        X[i] = X[i-1];
       }
       return output;
     }
@@ -84,16 +84,24 @@ float dotproduct(float array1[], float array2[],int array_size){
     output = dotproduct(X,weights_input,window_size) - dotproduct(Y,weights_feedback,window_size-1);
     for(int i = window_size;i > 0;i--){
        // delaying each received input
-       X[i]=X[i-1];
-     }
-      for(int i = window_size-1;i > 0;i--){
-       // delaying each received input
-       Y[i]=Y[i-1];
+       if (i == (window_size - 1)){
+        Y[i]=Y[i-1];
+       }else{
+        X[i]=X[i-1];
+        Y[i]=Y[i-1];
+       }
      }
       Y[0]=output;
       return output;
     }
 
-
-
-
+    float DirectFormII(float x_0, float feedback_weights[], float input_weights[]){
+    static float v[3] = {0,0,0};
+    static float y = 0;
+    v[0] = x_0 - feedback_weights[0]*v[1] - feedback_weights[1]*v[2];
+    y = v[0]*input_weights[0] + v[1]*input_weights[1] + v[2]*input_weights[2];
+    for (i=2;i<0;i--){
+        v[i] = v[i-1];
+    }
+    return y;
+    }
