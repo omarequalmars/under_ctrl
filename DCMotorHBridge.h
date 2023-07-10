@@ -24,12 +24,21 @@ void MoveitMoveit(int PulseWidth, int A_channel, int B_channel, int INPUT_PIN){
     
 }
 
-float currentscale(){// ACS712 current sensor ==> ADC scaling
-    static int bits;
-    bits = analogRead(A0);
-    bits -= 512;
-    
-    float voltage = bits*5/512.0;// map the bits to volts
-    float current = (voltage/0.185);// take the difference from the ZCV and divide by the sensitivity
-    return current;
+void Freebird(int PWM, int PWM_pin, int DIR_pin){
+   if (PWM>=255){
+        PWM = 255;
+    }else if(PWM<=-255){
+      PWM = -255;
+    }
+    // decide directions based on PWM sign
+    if(PWM >=0){ 
+      // if command is positive, go CCW/CW
+        digitalWrite(DIR_pin,HIGH);
+        analogWrite(PWM_pin,PWM);
+    }
+    else if(PWM < 0){ 
+      // if it switches signs, go the other way
+        digitalWrite(DIR_pin,LOW);
+        analogWrite(PWM_pin,-PWM);
+}
 }
