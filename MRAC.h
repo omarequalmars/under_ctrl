@@ -55,13 +55,13 @@ float NeedForSpeed(float variable, float T_samp){
     return diff;
 }
 
-float UnderControl(float speed, float setpoint, float gain_initial, float gain_max, float learning_rate, float time_constant, float T_samp){
+float UnderControl(float speed, float setpoint, float gain_initial, float gain_max, float gain_max_integral, float learning_rate, float time_constant, float T_samp){
     static float gain = 0;
     static float gain_integral = 0;
     static float tracking_err = 0;
     static float ctrlaction = 0;
     gain = ImproviseAdaptOvercome(speed, gain_initial, gain_max, learning_rate, time_constant, setpoint, T_samp);
-    gain_integral = ImproviseAdaptOvercomeIntegral(speed, gain_initial, gain_max, learning_rate, time_constant, setpoint, T_samp);
+    gain_integral = ImproviseAdaptOvercomeIntegral(speed, gain_initial, gain_max_integral, learning_rate, time_constant, setpoint, T_samp);
     tracking_err = error(speed, setpoint);
     ctrlaction = PID_ctrlr_withZOH(tracking_err, gain, gain_integral, 0, 255, T_samp, 1);
     return ctrlaction;
