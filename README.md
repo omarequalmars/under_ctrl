@@ -41,7 +41,13 @@ cd under_ctrl
 ## Examples
 - Classical PID Position Control example
 ```bash
+## Examples
+
+### PID Control Example
+```c
 #include "PID.h"
+
+// Define PID controller parameters
 #define K_p 1.0
 #define K_i 10.0
 #define K_d 0.1
@@ -50,21 +56,37 @@ cd under_ctrl
 #define anti_windup_on 1
 #define anti_windup_off 0
 
+// Define pin numbers for motor control
 #define in1 3
 #define in2 4
 #define PWM_pin A0
 
-void main(){
-float position_setpoint = 10.0
-float position_actual, error_signal;
-position_actual = readdata();
-error_signal = error(position_actual, position_setpoint);
-PWM = PID_ctrlr_withZOH(error_signal, K_p, K_i, K_d, max_PWM, sampling_time, anti_windup_on);
-MoveitMoveit(PWM, in1, in2, PWM_pin);
+void main() {
+    // Define the setpoint for the desired position
+    float position_setpoint = 10.0;
+    float position_actual, error_signal;
+
+    // Read the actual position (replace readdata() with your actual data reading function)
+    position_actual = readdata();
+
+    // Calculate the error signal
+    error_signal = error(position_actual, position_setpoint);
+
+    // Compute the PWM signal using the PID controller with Zero-Order Hold
+    float PWM = PID_ctrlr_withZOH(error_signal, K_p, K_i, K_d, max_PWM, sampling_time, anti_windup_on);
+
+    // Send the PWM signal to the motor driver to move the motor
+    MoveitMoveit(PWM, in1, in2, PWM_pin);
+}
+
 ```
 - MRAC-PI Speed Control Example
 ```bash
+### MRAC Example
+```c
 #include "MRAC.h"
+
+// Define MRAC controller parameters
 #define K_init_both 1.0
 #define K_integralmax 10.0
 #define K_proportionalmax 0.1
@@ -75,16 +97,26 @@ MoveitMoveit(PWM, in1, in2, PWM_pin);
 #define anti_windup_on 1
 #define anti_windup_off 0
 
+// Define pin numbers for motor control
 #define in1 3
 #define in2 4
 #define PWM_pin A0
 
-void main(){
-float speed_setpoint = 10.0
-float speed_actual, error_signal;
-speed_actual = readdata();
-PWM = UnderControl(speed_actual, speed_setpoint, K_init_both, K_proportionalmax, K_integralmax, learning_rate, reference_time_constant, sampling_time);
-MoveitMoveit(PWM, in1, in2, PWM_pin);
+void main() {
+    // Define the setpoint for the desired speed
+    float speed_setpoint = 10.0;
+    float speed_actual, error_signal;
+
+    // Read the actual speed (replace readdata() with your actual data reading function)
+    speed_actual = readdata();
+
+    // Compute the PWM signal using the MRAC controller
+    float PWM = UnderControl(speed_actual, speed_setpoint, K_init_both, K_proportionalmax, K_integralmax, learning_rate, reference_time_constant, sampling_time);
+
+    // Send the PWM signal to the motor driver to control the motor speed
+    MoveitMoveit(PWM, in1, in2, PWM_pin);
+}
+
 ```
 
 
