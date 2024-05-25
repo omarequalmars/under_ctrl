@@ -65,22 +65,6 @@ MoveitMoveit(PWM, in1, in2, PWM_pin);
 - MRAC-PI Speed Control Example
 ```bash
 #include "MRAC.h"
-#define sampling_time 0.005
-#define max_PWM 255
-#define anti_windup_on 1
-#define anti_windup_off 0
-
-#define in1 3
-#define in2 4
-#define PWM_pin A0
-
-void main(){
-float position_setpoint = 10.0
-float position_actual, error_signal;
-position_actual = readdata();
-error_signal = error(position_actual, position_setpoint);
-PWM = ```bash
-#include "PID.h"
 #define K_init_both 1.0
 #define K_integralmax 10.0
 #define K_proportionalmax 0.1
