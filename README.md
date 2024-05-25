@@ -1,21 +1,46 @@
-# Control Systems Repository
+Control Systems Repository
+This repository contains a collection of header files and some .c files for testing various control systems, filters, and DC motor operation functions.
 
-This repository contains a collection of header files and some .c files for testing. The header files include functions for various control systems, filters, and DC motor operation.
+Table of Contents
+PID Control
+Model-Reference Adaptive Control
+Filters
+DC Motor Operation
+Future Plans
+Important Note
+Installation
+Usage
+Contributing
+License
+PID Control
+PID.h contains functions for PID control, including saturation and anti-windup features.
 
-## PID Control
-`PID.h` is a header file containing a family of functions relating to PID control, mainly culminating in a complete PID function with saturation and anti-windup features.
+Model-Reference Adaptive Control
+MRAC.h includes functions for Model-Reference Adaptive Control implementing the Lyapunov-rule.
 
-## Model-Reference Adaptive Control
-`MRAC.h` is a header file containing functions for Model-Reference Adaptive Control implementing the Lyapunov-rule.
+Filters
+filters.h offers functions for FIR/IIR filters.
 
-## Filters
-`filters.h` contains functions for FIR/IIR filters.
+DC Motor Operation
+DCMotorHBridge.h contains functions for operating DC Motors using H-bridges.
 
-## DC Motor Operation
-`DCMotorHBridge.h` is a header file containing a family of functions commonly used in the operation of DC Motors using H-bridges.
+Future Plans
+Plans to expand this project to include additional controllers and advanced control systems for enthusiasts, students, and professionals.
 
-## Future Plans
-In the future, it is possible that this project is expanded to include functions for other controllers and bring advanced control systems to both enthusiasts', students', and professionals' fingertips.
+Important Note
+Please read the comments inside the header files before using them in your code to understand their functionality and proper usage.
 
-## Important Note
-Please read the comments inside the header files before using them in your code. It is important for your project to know how these functions work and how to correctly use them.
+Installation
+bash
+Copy code
+git clone https://github.com/omarequalmars/under_ctrl.git
+cd under_ctrl
+Usage
+Include the relevant header files in your project and follow the provided examples to implement the control systems and filters.
+
+Contributing
+Contributions are welcome! Please read the contributing guidelines for more details.
+
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
