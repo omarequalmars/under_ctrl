@@ -11,6 +11,7 @@ This repository contains a collection of header files and some `.c` files for te
 - [Important Note](#important-note)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Examples](#examples)
 - [Contributing](#contributing)
 - [License](#license)
 
